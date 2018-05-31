@@ -11,6 +11,7 @@
     using Main.Models;
     using Main.ViewModels;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Repository with all the queries to the database using the entity framework
@@ -99,6 +100,21 @@
                              join t3 in this.context.Categories on t1.IdCategory equals t3.Id
                              orderby t1.Dob descending
                              select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name,t1.ExpirationDate,t1.Draft }).Where(x => x.Deleted == false).Where(x => x.Draft == false);
+            return itemslist;
+        }
+
+        /// <summary>
+        /// List all the items saved in the database for anonymlous view
+        /// </summary>
+        /// <returns>List of items object</returns>
+        public async Task<ICollection<ItemViewModel>> GetMostRecentItemsAnonymousWall()
+        {
+            var itemslist = await (from t1 in this.context.Items
+
+                             join t2 in this.context.Users on t1.Username equals t2.UserName
+                             join t3 in this.context.Categories on t1.IdCategory equals t3.Id
+                             orderby t1.Dob descending
+                             select new ItemViewModel { Username = t1.Username, Id = t1.Id, Path = t1.Path, Pinned = t1.Pinned, Title = t1.Title, Dob = t1.Dob, Description = t1.Description, Name = t2.Name, LastName = t2.LastName, Deleted = t1.Deleted, IdCategory = t1.IdCategory, CategoryName = t3.Name, ExpirationDate = t1.ExpirationDate, Draft = t1.Draft }).Where(x => x.Deleted == false && x.Draft == false && DateTime.Now.Subtract(x.Dob).TotalDays < 5).ToListAsync();
             return itemslist;
         }
         /// <summary>

@@ -1,6 +1,6 @@
 # broadcast-tool-backend
 
-This project is the back-end of the Broadcast Tool application. 
+This project is the back-end of the Broadcast Tool application. It has an RSS feed also to get the latest news
 
 Is an.Net Core RESTFul API.
 
