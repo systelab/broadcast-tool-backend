@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
     using Main.Models;
     using Main.ViewModels;
     using Microsoft.AspNetCore.Http;
@@ -20,6 +19,9 @@
         object GetAllItems();
         object GetAllItemsAnonymous();
         object GetAllItemsAnonymousWall();
+
+        Task<ICollection<ItemViewModel>> GetMostRecentItemsAnonymousWall();
+
         object GetAllItemsByUser(string username);
         ItemViewModel GetItem(Item nItem);
 

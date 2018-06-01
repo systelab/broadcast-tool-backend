@@ -24,6 +24,7 @@
     using Swashbuckle.AspNetCore.Swagger;
     using System.Collections.Generic;
     using main.Models;
+    using cloudscribe.Syndication.Models.Rss;
 
     // This is 
     public class Startup
@@ -170,6 +171,7 @@
             services.AddScoped<IJwtHandler, JwtHandler>();
             services.AddScoped<IPasswordHasher<UserManage>, PasswordHasher<UserManage>>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IChannelProvider, BroadcastRssChannelProvider>();
             services.AddLogging();
 
             var automapConfiguration = new AutoMapper.MapperConfiguration(cfg =>
