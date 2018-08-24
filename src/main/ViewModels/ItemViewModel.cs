@@ -33,5 +33,7 @@
         public bool Draft { get; set; }
         public DateTime ExpirationDate { get; set; }
         public string expDate { get; set; }
+        public int IdLocalization { get; set; }
+        public string Localization { get; set; }
     }
 }

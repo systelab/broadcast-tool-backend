@@ -11,9 +11,10 @@ using System;
 namespace main.Migrations
 {
     [DbContext(typeof(ItemsContext))]
-    partial class SeedDotnetContextModelSnapshot : ModelSnapshot
+    [Migration("20180824100251_dbv3")]
+    partial class dbv3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,8 +74,6 @@ namespace main.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("Deleted");
 
                     b.Property<string>("Name");
 

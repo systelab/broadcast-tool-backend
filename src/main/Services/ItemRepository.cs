@@ -64,29 +64,44 @@
         /// List all the items saved in the database
         /// </summary>
         /// <returns>List of items object</returns>
-        public object GetAllItems()
+        public object GetAllItems(int localization)
         {
             var itemslist = (from t1 in this.context.Items
 
-                            join t2 in this.context.Users on t1.Username equals t2.UserName
+                             join t2 in this.context.Users on t1.Username equals t2.UserName
                              join t3 in this.context.Categories on t1.IdCategory equals t3.Id
+                             join t4 in this.context.Localizations on t1.IdLocalization equals t4.Id
                              orderby t1.Dob descending
-                            select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName,t1.Deleted, t1.IdCategory, NameCategory = t3.Name, t1.ExpirationDate, t1.Draft }).Where(x => x.Deleted == false).Where(x => x.Draft == false);
+                             select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name, t1.ExpirationDate, t1.Draft, t1.IdLocalization, Localization = t4.Name }).Where(x => x.Deleted == false);
+
+            if (localization > 0)
+            {
+                 itemslist = itemslist.Where(x => x.IdLocalization == localization);
+
+            }
             return itemslist;
         }
         /// <summary>
         /// List all the items saved in the database for anonymlous view in the viewer
         /// </summary>
         /// <returns>List of items object</returns>
-        public object GetAllItemsAnonymous()
+        public object GetAllItemsAnonymous(int localization)
         {
+
             var itemslist = (from t1 in this.context.Items
 
                              join t2 in this.context.Users on t1.Username equals t2.UserName
                              join t3 in this.context.Categories on t1.IdCategory equals t3.Id
+                             join t4 in this.context.Localizations on t1.IdLocalization equals t4.Id
                              orderby t1.Dob descending
-                             select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name, t1.ExpirationDate, t1.Draft }).Where(x => x.Deleted == false).Where(x => x.Pinned == true).Where(x => x.Draft == false).Where(x => x.ExpirationDate > DateTime.Now);
+                             select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name, t1.ExpirationDate, t1.Draft, t1.IdLocalization, Localization = t4.Name }).Where(x => x.Deleted == false).Where(x => x.Pinned == true).Where(x => x.Draft == false).Where(x => x.ExpirationDate > DateTime.Now);
+            if (localization > 0)
+            {
+                itemslist = itemslist.Where(x => x.IdLocalization == localization);
+
+            }
             return itemslist;
+
         }
         /// <summary>
         /// List all the items saved in the database for anonymlous view
@@ -98,8 +113,9 @@
 
                              join t2 in this.context.Users on t1.Username equals t2.UserName
                              join t3 in this.context.Categories on t1.IdCategory equals t3.Id
+                             join t4 in this.context.Localizations on t1.IdLocalization equals t4.Id
                              orderby t1.Dob descending
-                             select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name,t1.ExpirationDate,t1.Draft }).Where(x => x.Deleted == false).Where(x => x.Draft == false);
+                             select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted, t1.IdCategory, NameCategory = t3.Name,t1.ExpirationDate,t1.Draft, t1.IdLocalization, Localization = t4.Name }).Where(x => x.Deleted == false).Where(x => x.Draft == false);
             return itemslist;
         }
 
@@ -113,8 +129,9 @@
 
                              join t2 in this.context.Users on t1.Username equals t2.UserName
                              join t3 in this.context.Categories on t1.IdCategory equals t3.Id
+                             join t4 in this.context.Localizations on t1.IdLocalization equals t4.Id
                              orderby t1.Dob descending
-                             select new ItemViewModel { Username = t1.Username, Id = t1.Id, Path = t1.Path, Pinned = t1.Pinned, Title = t1.Title, Dob = t1.Dob, Description = t1.Description, Name = t2.Name, LastName = t2.LastName, Deleted = t1.Deleted, IdCategory = t1.IdCategory, CategoryName = t3.Name, ExpirationDate = t1.ExpirationDate, Draft = t1.Draft }).Where(x => x.Deleted == false && x.Draft == false && DateTime.Now.Subtract(x.Dob).TotalDays < 5).ToListAsync();
+                             select new ItemViewModel { Username = t1.Username, Id = t1.Id, Path = t1.Path, Pinned = t1.Pinned, Title = t1.Title, Dob = t1.Dob, Description = t1.Description, Name = t2.Name, LastName = t2.LastName, Deleted = t1.Deleted, IdCategory = t1.IdCategory, CategoryName = t3.Name, ExpirationDate = t1.ExpirationDate, Draft = t1.Draft, IdLocalization = t1.IdLocalization, Localization = t4.Name }).Where(x => x.Deleted == false && x.Draft == false && DateTime.Now.Subtract(x.Dob).TotalDays < 5).ToListAsync();
             return itemslist;
         }
         /// <summary>
@@ -127,7 +144,8 @@
             var itemslist = (from t1 in this.context.Items
                             join t2 in this.context.Users on t1.Username equals t2.UserName
                             join t3 in this.context.Categories on t1.IdCategory equals t3.Id
-                            select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted,t1.IdCategory,NameCategory = t3.Name, t1.ExpirationDate, t1.Draft }).Where(o => o.Id == nItem.Id).Where(o => o.Deleted == false);
+                            join t4 in this.context.Localizations on t1.IdLocalization equals t4.Id
+                            select new { t1.Username, t1.Id, t1.Path, t1.Pinned, t1.Title, t1.Dob, t1.Description, t2.Name, t2.LastName, t1.Deleted,t1.IdCategory,NameCategory = t3.Name, t1.ExpirationDate, t1.Draft, IdLocalization = t1.IdLocalization, Localization = t4.Name }).Where(o => o.Id == nItem.Id).Where(o => o.Deleted == false);
            
             ItemViewModel it1 = new ItemViewModel
             {
@@ -143,7 +161,9 @@
                 IdCategory = itemslist.First().IdCategory,
                 CategoryName = itemslist.First().NameCategory,
                 ExpirationDate = itemslist.First().ExpirationDate,
-                Draft = itemslist.First().Draft
+                Draft = itemslist.First().Draft,
+                IdLocalization = itemslist.First().IdLocalization,
+                Localization = itemslist.First().Localization
             };
             return it1;
         }
@@ -214,7 +234,8 @@
                 Email = it.Email,
                 IdCategory = it.IdCategory,
                 ExpirationDate = it.ExpirationDate,
-                Draft = it.Draft
+                Draft = it.Draft,
+                IdLocalization = it.IdLocalization
             };
             UpdateItem(it1);
 
@@ -301,6 +322,53 @@
         {
             return this.context.Categories.Where(x => x.Deleted == false).OrderBy(x => x.Name).ToList();
         }
+
+
+        /// <summary>
+        /// Add a localization
+        /// </summary>
+        /// <param name="nLocalization"></param>
+        public void AddLocalization(Localization nLocalization)
+        {
+            this.context.Add(nLocalization);
+            this.context.SaveChanges();
+        }
+        /// <summary>
+        /// Get a specific lozalization
+        /// </summary>
+        /// <param name="nLocalization"></param>
+        /// <returns></returns>
+        public Localization GetLocalization(Localization nLocalization)
+        {
+            return this.context.Localizations.Where(x => x.Id == nLocalization.Id).FirstOrDefault();
+        }
+        /// <summary>
+        /// Delete a specific lozalization
+        /// </summary>
+        /// <param name="nLocalization"></param>
+        public void DeleteLocalization(Localization nLocalization)
+        {
+            this.context.Entry(nLocalization).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            this.context.SaveChanges();
+        }
+        /// <summary>
+        /// Update the name of a specific localization
+        /// </summary>
+        /// <param name="nLocalization"></param>
+        public void UpdateLocalization(Localization nLocalization)
+        {
+            this.context.Entry(nLocalization).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            this.context.SaveChanges();
+        }
+        /// <summary>
+        /// Get a list of localizations
+        /// </summary>
+        /// <returns></returns>
+        public List<Localization> GetAllLocalizations()
+        {
+            return this.context.Localizations.Where(x => x.Deleted == false).OrderBy(x => x.Name).ToList();
+        }
+
     }
 
 }

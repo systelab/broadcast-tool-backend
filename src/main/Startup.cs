@@ -181,6 +181,7 @@
                     cfg.CreateMap<Category, CategoryViewModel>().ReverseMap();
                     cfg.CreateMap<CategoryViewModel, Category>().ReverseMap();
                     cfg.CreateMap<UserViewModel, UserManage>().ReverseMap();
+                    cfg.CreateMap<LocalizationViewModel, Localization>().ReverseMap();
                 });
 
             var mapper = automapConfiguration.CreateMapper();

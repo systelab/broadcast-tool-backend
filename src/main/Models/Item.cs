@@ -20,5 +20,8 @@ namespace Main.Models
         [ForeignKey("Category")]
         public int IdCategory { get; set; }
 
+        [ForeignKey("Localization")]
+        public int IdLocalization { get; set; }
+
     }
 }

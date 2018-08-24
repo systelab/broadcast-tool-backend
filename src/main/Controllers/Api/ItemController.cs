@@ -114,25 +114,35 @@
         /// <returns>result of the action</returns>
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        public IActionResult GetAllItems(int id)
+        public IActionResult GetAllItems(int id,int localization)
         {
             try
             {
                 if (id == 0)
                 {
-                    var results = this.repository.GetAllItems();
+                    var results = this.repository.GetAllItems(localization);
                     return this.Ok(results);
                 }
                 else if (id == -1)
                 {
-                    var results = this.repository.GetAllItemsByUser(this.User.Identity.Name);
-                    return this.Ok(results);
+                    var user =  this.userManager.FindByNameAsync(this.User.Identity.Name);
+                    if( user.Result.Admin == true)
+                    {
+                        var results = this.repository.GetAllItems(0);
+                        return this.Ok(results);
+                    }
+                    else
+                    {
+                        var results = this.repository.GetAllItemsByUser(this.User.Identity.Name);
+                        return this.Ok(results);
+                    }
                 }
                 else
                 {
                     ItemViewModel itmv = this.repository.GetItem(new Item { Id = id });
                     itmv.access = 0;
-                    if (itmv.Username == this.User.Identity.Name)
+                    var user = this.userManager.FindByNameAsync(this.User.Identity.Name);
+                    if (itmv.Username == this.User.Identity.Name || user.Result.Admin == true)
                     {
                         itmv.access = 1;
                     }
@@ -152,13 +162,13 @@
         }
         [Route("anonymous")]
         [HttpGet]
-        public IActionResult GetAllItemsAnonymous(int id)
+        public IActionResult GetAllItemsAnonymous(int id, int localization)
         {
             try
             {
                 if (id == 0)
                 {
-                    var results = this.repository.GetAllItemsAnonymous();
+                    var results = this.repository.GetAllItemsAnonymous(localization);
                     return this.Ok(results);
                 }
                 else if (id == -1)
@@ -228,7 +238,7 @@
                     Item itemToDelete = this.mapper.Map<Item>(itemDetect);
                     if (itemToDelete == null)
                     {
-                        return this.GetAllItems(-1);
+                        return this.GetAllItems(-1,0);
                     }
                     itemToDelete.Deleted = true;
                     var results = this.repository.DeleteItem(itemToDelete);
@@ -277,6 +287,10 @@
                 if(item.IdCategory != 0)
                 {
                     results.IdCategory = item.IdCategory;
+                }
+                if (item.IdLocalization != 0)
+                {
+                    results.IdLocalization = item.IdLocalization;
                 }
                 results.Pinned = item.Pinned;
                 results.Draft = item.Draft;

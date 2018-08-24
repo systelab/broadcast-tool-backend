@@ -16,8 +16,8 @@
 
         List<Item> DeleteItem(Item nItem);
 
-        object GetAllItems();
-        object GetAllItemsAnonymous();
+        object GetAllItems(int localization);
+        object GetAllItemsAnonymous(int localization);
         object GetAllItemsAnonymousWall();
 
         Task<ICollection<ItemViewModel>> GetMostRecentItemsAnonymousWall();
@@ -39,5 +39,12 @@
         void DeleteCategory(Category nCategory);
         void UpdateCategory(Category nCategory);
         List<Category> GetAllCategories();
+
+
+        void AddLocalization(Localization nLocalization);
+        Localization GetLocalization(Localization nLocalization);
+        void DeleteLocalization(Localization nLocalization);
+        void UpdateLocalization(Localization nLocalization);
+        List<Localization> GetAllLocalizations();
     }
 }
